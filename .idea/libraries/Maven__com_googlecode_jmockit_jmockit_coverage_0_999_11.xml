@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.googlecode.jmockit:jmockit-coverage:0.999.11">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmockit/jmockit-coverage/0.999.11/jmockit-coverage-0.999.11.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmockit/jmockit-coverage/0.999.11/jmockit-coverage-0.999.11-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmockit/jmockit-coverage/0.999.11/jmockit-coverage-0.999.11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
