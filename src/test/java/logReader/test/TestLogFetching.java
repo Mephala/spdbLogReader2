@@ -4,6 +4,8 @@ import logReader.dao.DBConnector;
 import logReader.dao.LogFetcher;
 import logReader.exception.LogReaderException;
 import logReader.model.ControllerLog;
+import logReader.model.LogQuery;
+import logReader.util.LogReaderUtils;
 import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +47,22 @@ public class TestLogFetching {
         LogFetcher logFetcher = new LogFetcher(dbConnector);
         List<ControllerLog> controllerLogList = logFetcher.fetchControllerLogs();
         assertTrue(controllerLogList!=null && controllerLogList.size()>0);
+        System.out.println(controllerLogList);
+    }
+
+
+    @Test
+    public void testFetchingLogsByQuery() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogQuery logQuery = new LogQuery();
+        logQuery.setMethod("handShake");
+        String dbIp = "localhost";
+        String username = "root";
+        String pw = "bbbbbbbbb";
+        String port = "3306";
+        DBConnector dbConnector = new DBConnector(dbIp,username,pw,port);
+        LogFetcher logFetcher = new LogFetcher(dbConnector);
+        List<ControllerLog> controllerLogList = logFetcher.fetchControllerLogs(logQuery);
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogList));
         System.out.println(controllerLogList);
     }
 

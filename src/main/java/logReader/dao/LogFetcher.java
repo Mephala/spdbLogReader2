@@ -1,6 +1,9 @@
 package logReader.dao;
 
+import com.mysql.jdbc.log.LogUtils;
 import logReader.model.ControllerLog;
+import logReader.model.LogQuery;
+import logReader.util.LogReaderUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -35,6 +38,11 @@ public class LogFetcher {
         String sql = "Select * from SPG_CONTROLLER_LOG order by LOG_TIME desc limit " + defaultControllerLimit;
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(sql);
+        List<ControllerLog> controllerLogs = buildControllerLogList(rs);
+        return controllerLogs;
+    }
+
+    private List<ControllerLog> buildControllerLogList(ResultSet rs) throws SQLException {
         List<ControllerLog> controllerLogs = new ArrayList<>();
         while (rs.next()) {
             ControllerLog cLog = new ControllerLog();
@@ -47,6 +55,22 @@ public class LogFetcher {
             cLog.setRetval(rs.getString("RETVAL"));
             controllerLogs.add(cLog);
         }
+        return controllerLogs;
+    }
+
+    public List<ControllerLog> fetchControllerLogs(LogQuery logQuery) throws SQLException {
+        Connection connection = dbConnector.getConnection();
+        Integer limit = logQuery.getLimit();
+        if (limit == null)
+            limit = DEFAULT_CONTROLLER_LIMIT;
+        StringBuilder whereClauseBuilder = new StringBuilder();
+        if (LogReaderUtils.isNotEmpty(logQuery.getMethod()))
+            whereClauseBuilder.append("where METHOD = '" + logQuery.getMethod() + "'");
+        String whereClause = whereClauseBuilder.toString();
+        String sql = "Select * from SPG_CONTROLLER_LOG " + whereClause + " order by LOG_TIME desc limit " + limit.toString();
+        Statement st = connection.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        List<ControllerLog> controllerLogs = buildControllerLogList(rs);
         return controllerLogs;
     }
 }
