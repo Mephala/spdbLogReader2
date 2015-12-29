@@ -1,7 +1,7 @@
 package logReader.util;
 
-import logReader.model.ControllerLog;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -25,4 +25,10 @@ public class LogReaderUtils {
     public static <E> boolean isNotEmpty(List<E> list) {
         return !isEmpty(list);
     }
+
+    public static void centralizeJFrame(JFrame frame) {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+    }
+
 }

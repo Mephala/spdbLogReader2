@@ -3,6 +3,7 @@ package logReader.test;
 import logReader.dao.DBConnector;
 import logReader.dao.LogFetcher;
 import logReader.exception.LogReaderException;
+import logReader.manager.LogManager;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
 import logReader.util.LogReaderUtils;
@@ -64,6 +65,26 @@ public class TestLogFetching {
         List<ControllerLog> controllerLogList = logFetcher.fetchControllerLogs(logQuery);
         assertTrue(LogReaderUtils.isNotEmpty(controllerLogList));
         System.out.println(controllerLogList);
+    }
+
+    @Test
+    public void testLogManagerInitialization() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        assertTrue(logManager != null);
+    }
+
+    @Test
+    public void testFetchingLastControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        final int latestLogLimit = 10000;
+        List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs(latestLogLimit);
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
+    }
+
+    @Test(expected = Exception.class)
+    public void testInvalidCredentials() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager("46.118.73.45", "root2", "bbbbbbbbb", "3306"); //wrong info
+        assertTrue(logManager != null);
     }
 
 }

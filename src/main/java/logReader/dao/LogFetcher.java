@@ -1,6 +1,5 @@
 package logReader.dao;
 
-import com.mysql.jdbc.log.LogUtils;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
 import logReader.util.LogReaderUtils;
@@ -17,8 +16,8 @@ import java.util.List;
  */
 public class LogFetcher {
 
+    private static final int DEFAULT_CONTROLLER_LIMIT = 1000;
     private DBConnector dbConnector;
-    private static final int DEFAULT_CONTROLLER_LIMIT = 500;
 
     public LogFetcher(DBConnector dbConnector) {
         this.dbConnector = dbConnector;
@@ -53,6 +52,7 @@ public class LogFetcher {
             cLog.setLogDate(rs.getDate("LOG_TIME"));
             cLog.setParameter(rs.getString("PARAMETER"));
             cLog.setRetval(rs.getString("RETVAL"));
+            cLog.setIp(rs.getString("REQUEST_IP"));
             controllerLogs.add(cLog);
         }
         return controllerLogs;

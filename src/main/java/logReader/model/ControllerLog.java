@@ -15,6 +15,11 @@ public class ControllerLog {
     private String retval;
     private String customLog;
     private String exception;
+    private String ip;
+
+    public ControllerLog() {
+
+    }
 
     @Override
     public String toString() {
@@ -27,11 +32,16 @@ public class ControllerLog {
                 ", retval='" + retval + '\'' +
                 ", customLog='" + customLog + '\'' +
                 ", exception='" + exception + '\'' +
+                ", ip='" + ip + '\'' +
                 '}';
     }
 
-    public ControllerLog(){
+    public String getIp() {
+        return ip;
+    }
 
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public Date getLogDate() {
