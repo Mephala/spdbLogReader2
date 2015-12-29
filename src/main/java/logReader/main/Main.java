@@ -1,9 +1,15 @@
 package logReader.main;
 
+import logReader.exception.LogReaderException;
+import logReader.manager.LogManager;
+import logReader.session.ApplicationSession;
 import logReader.util.LogReaderUtils;
+import logReader.view.LogView;
 import logReader.view.LoginView;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
 
 /**
  * Created by GokhanOzgozen on 12/24/2015.
@@ -16,21 +22,35 @@ public class Main {
     public static void main(String[] args){
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            loginView = new LoginView();
-            LogReaderUtils.centralizeJFrame(loginView);
-            loginView.pack();
-            loginView.setVisible(true);
+            test();
+//            loginView = new LoginView();
+//            LogReaderUtils.centralizeJFrame(loginView);
+//            loginView.pack();
+//            loginView.setVisible(true);
         } catch (Throwable t) {
             t.printStackTrace();
             JOptionPane.showMessageDialog(null, "Fatal error on main process :" + t.getMessage(), "Fatal error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private static void test() throws SQLException, LogReaderException, ClassNotFoundException {
+
+        DefaultTableModel defaultTableModel = new LogManager().createDefaultTableModel();
+        LogView logView = new LogView(defaultTableModel);
+        LogReaderUtils.centralizeJFrame(logView);
+        logView.pack();
+        logView.setVisible(true);
+
+    }
+
     public static void loginSuccess() {
         try {
             loginView.setVisible(false);
             loginView.dispose();
-            JOptionPane.showMessageDialog(null, "Mekintosh", "yeri", JOptionPane.INFORMATION_MESSAGE);
+            DefaultTableModel defaultTableModel = ApplicationSession.logManager.createDefaultTableModel();
+            LogView logView = new LogView(defaultTableModel);
+            logView.pack();
+            logView.setVisible(true);
         } catch (Throwable t) {
 
         }

@@ -81,6 +81,17 @@ public class TestLogFetching {
         assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
     }
 
+    @Test
+    public void testFetchingMethodExistsInControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        final int latestLogLimit = 10000;
+        List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs(latestLogLimit);
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
+        for (ControllerLog controllerLog : controllerLogs) {
+            assertTrue(LogReaderUtils.isNotEmpty(controllerLog.getMethod()));
+        }
+    }
+
     @Test(expected = Exception.class)
     public void testInvalidCredentials() throws SQLException, LogReaderException, ClassNotFoundException {
         LogManager logManager = new LogManager("46.118.73.45", "root2", "bbbbbbbbb", "3306"); //wrong info

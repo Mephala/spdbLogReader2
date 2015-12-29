@@ -6,7 +6,9 @@ import logReader.exception.LogReaderException;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
 
+import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -47,5 +49,21 @@ public class LogManager {
         LogQuery logQuery = new LogQuery();
         logQuery.setLimit(latestLogLimit);
         return logFetcher.fetchControllerLogs(logQuery);
+    }
+
+    public DefaultTableModel createDefaultTableModel() throws SQLException {
+        List<ControllerLog> controllerLogs = fetchLatestControllerLogs();
+        DefaultTableModel defaultTableModel = new DefaultTableModel();
+        defaultTableModel.addColumn("METHOD");
+        defaultTableModel.addColumn("EXECUTION TIME");
+        defaultTableModel.addColumn("EXCEPTION");
+        defaultTableModel.addColumn("IP");
+        defaultTableModel.addColumn("CUSTOM LOG");
+        defaultTableModel.addColumn("LOG TIME");
+        for (ControllerLog controllerLog : controllerLogs) {
+            defaultTableModel.addRow(new Object[]{controllerLog.getMethod(), controllerLog.getExecutiontime(),
+                    controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString()});
+        }
+        return defaultTableModel;
     }
 }

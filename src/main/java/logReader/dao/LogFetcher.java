@@ -49,10 +49,11 @@ public class LogFetcher {
             cLog.setCustomLog(rs.getString("CUSTOM_MSG"));
             cLog.setException(rs.getString("EXCEPTION"));
             cLog.setExecutiontime(rs.getLong("EXECUTION_TIME"));
-            cLog.setLogDate(rs.getDate("LOG_TIME"));
+            cLog.setLogDate(rs.getTimestamp("LOG_TIME"));
             cLog.setParameter(rs.getString("PARAMETER"));
             cLog.setRetval(rs.getString("RETVAL"));
             cLog.setIp(rs.getString("REQUEST_IP"));
+            cLog.setMethod(rs.getString("METHOD"));
             controllerLogs.add(cLog);
         }
         return controllerLogs;
