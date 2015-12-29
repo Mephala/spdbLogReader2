@@ -6,6 +6,7 @@ import logReader.exception.LogReaderException;
 import logReader.manager.LogManager;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
+import logReader.model.TraceLog;
 import logReader.util.LogReaderUtils;
 import mockit.integration.junit4.JMockit;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Random;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.fail;
@@ -96,6 +98,21 @@ public class TestLogFetching {
     public void testInvalidCredentials() throws SQLException, LogReaderException, ClassNotFoundException {
         LogManager logManager = new LogManager("46.118.73.45", "root2", "bbbbbbbbb", "3306"); //wrong info
         assertTrue(logManager != null);
+    }
+
+    @Test
+    public void testTracingALog() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        final int latestLogLimit = 10000;
+        List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs(latestLogLimit);
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
+        for (ControllerLog controllerLog : controllerLogs) {
+            assertTrue(LogReaderUtils.isNotEmpty(controllerLog.getMethod()));
+        }
+        Random r = new Random();
+        int logSampleIndex = r.nextInt(latestLogLimit);
+        ControllerLog randomLog = controllerLogs.get(logSampleIndex);
+        List<TraceLog> traceLogs = logManager.getLogTrace(randomLog);
     }
 
 }

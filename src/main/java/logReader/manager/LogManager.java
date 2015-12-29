@@ -5,6 +5,7 @@ import logReader.dao.LogFetcher;
 import logReader.exception.LogReaderException;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
+import logReader.model.TraceLog;
 
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
@@ -69,10 +70,15 @@ public class LogManager {
         defaultTableModel.addColumn("IP");
         defaultTableModel.addColumn("CUSTOM LOG");
         defaultTableModel.addColumn("LOG TIME");
+        defaultTableModel.addColumn("PRECISE_TIME");
         for (ControllerLog controllerLog : controllerLogs) {
             defaultTableModel.addRow(new Object[]{controllerLog.getMethod(), controllerLog.getExecutiontime(),
-                    controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString()});
+                    controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString(), controllerLog.getPreciseTime()});
         }
         return defaultTableModel;
+    }
+
+    public List<TraceLog> getLogTrace(ControllerLog controllerLog) throws SQLException {
+        return logFetcher.fetchTraceLogs(controllerLog.getThreadId());
     }
 }

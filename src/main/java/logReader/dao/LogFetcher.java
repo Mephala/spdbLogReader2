@@ -2,6 +2,7 @@ package logReader.dao;
 
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
+import logReader.model.TraceLog;
 import logReader.util.LogReaderUtils;
 
 import java.sql.Connection;
@@ -55,6 +56,7 @@ public class LogFetcher {
             cLog.setIp(rs.getString("REQUEST_IP"));
             cLog.setMethod(rs.getString("METHOD"));
             cLog.setThreadId(rs.getLong("THREAD_ID"));
+            cLog.setPreciseTime(rs.getLong("PRECISE_TIME"));
             controllerLogs.add(cLog);
         }
         return controllerLogs;
@@ -74,5 +76,17 @@ public class LogFetcher {
         ResultSet rs = st.executeQuery(sql);
         List<ControllerLog> controllerLogs = buildControllerLogList(rs);
         return controllerLogs;
+    }
+
+    public List<TraceLog> fetchTraceLogs(Long threadId) throws SQLException {
+        List<TraceLog> traceLogs = new ArrayList<>();
+        Connection connection = dbConnector.getConnection();
+        String managerSelectSql = "select * from SPG_MANAGER_LOG where THREAD_ID = " + threadId.toString();
+        Statement st = connection.createStatement();
+        ResultSet rs = st.executeQuery(managerSelectSql);
+        while (rs.next()) {
+
+        }
+        return traceLogs;
     }
 }

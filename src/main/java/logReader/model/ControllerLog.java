@@ -17,9 +17,18 @@ public class ControllerLog {
     private String exception;
     private String ip;
     private Long threadId;
+    private Long preciseTime;
 
     public ControllerLog() {
 
+    }
+
+    public Long getPreciseTime() {
+        return preciseTime;
+    }
+
+    public void setPreciseTime(Long preciseTime) {
+        this.preciseTime = preciseTime;
     }
 
     public Long getThreadId() {
