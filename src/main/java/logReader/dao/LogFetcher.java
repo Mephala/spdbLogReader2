@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -87,6 +88,14 @@ public class LogFetcher {
         while (rs.next()) {
 
         }
+        TraceLog traceLog = new TraceLog();
+        traceLog.setMethod("test");
+        traceLog.setPreciseTime(System.currentTimeMillis());
+        traceLog.setClassName("myClass");
+        traceLog.setExecutionTime(33L);
+        traceLog.setLogTime(new Date());
+        traceLog.setThreadId(19L);
+        traceLogs.add(traceLog);
         return traceLogs;
     }
 }

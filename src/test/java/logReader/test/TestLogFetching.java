@@ -103,7 +103,7 @@ public class TestLogFetching {
     @Test
     public void testTracingALog() throws SQLException, LogReaderException, ClassNotFoundException {
         LogManager logManager = new LogManager();
-        final int latestLogLimit = 10000;
+        final int latestLogLimit = 100;
         List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs(latestLogLimit);
         assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
         for (ControllerLog controllerLog : controllerLogs) {
@@ -113,6 +113,7 @@ public class TestLogFetching {
         int logSampleIndex = r.nextInt(latestLogLimit);
         ControllerLog randomLog = controllerLogs.get(logSampleIndex);
         List<TraceLog> traceLogs = logManager.getLogTrace(randomLog);
+        assertTrue(LogReaderUtils.isNotEmpty(traceLogs));
     }
 
 }

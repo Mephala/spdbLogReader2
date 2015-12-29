@@ -22,12 +22,7 @@ public class LogView extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON2) {
-                    LoginView loginView = new LoginView();
-                    loginView.setSize(800, 600);
-                    loginView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-                    loginView.setContentPane(panel);
-                    loginView.pack();
-                    loginView.setVisible(true);
+                    LogTraceView logTraceView = new LogTraceView();
                 }
             }
         });
