@@ -3,7 +3,6 @@ package logReader.main;
 import logReader.exception.LogReaderException;
 import logReader.manager.LogManager;
 import logReader.session.ApplicationSession;
-import logReader.util.LogReaderUtils;
 import logReader.view.LogView;
 import logReader.view.LoginView;
 
@@ -37,7 +36,6 @@ public class Main {
 
         DefaultTableModel defaultTableModel = new LogManager().createDefaultTableModel();
         LogView logView = new LogView(defaultTableModel);
-        LogReaderUtils.centralizeJFrame(logView);
         logView.pack();
         logView.setVisible(true);
 

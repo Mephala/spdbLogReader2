@@ -53,7 +53,16 @@ public class LogManager {
 
     public DefaultTableModel createDefaultTableModel() throws SQLException {
         List<ControllerLog> controllerLogs = fetchLatestControllerLogs();
-        DefaultTableModel defaultTableModel = new DefaultTableModel();
+        DefaultTableModel defaultTableModel = new DefaultTableModel() {
+            @Override
+            public Class getColumnClass(int c) {
+                Object obj = getValueAt(0, c);
+                if (obj == null)
+                    return Object.class;
+                else
+                    return getValueAt(0, c).getClass();
+            }
+        };
         defaultTableModel.addColumn("METHOD");
         defaultTableModel.addColumn("EXECUTION TIME");
         defaultTableModel.addColumn("EXCEPTION");

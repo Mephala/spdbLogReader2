@@ -16,9 +16,18 @@ public class ControllerLog {
     private String customLog;
     private String exception;
     private String ip;
+    private Long threadId;
 
     public ControllerLog() {
 
+    }
+
+    public Long getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(Long threadId) {
+        this.threadId = threadId;
     }
 
     @Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <assemble.output.directory>C:\Users\Gokhan\Desktop</assemble.output.directory>
+        <assemble.output.directory>C:\Users\N56834\Desktop</assemble.output.directory>
     </properties>
 
     <build>
@@ -37,7 +37,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.gokhanabi.com.gokhanabi.com.gokhanabi.main.Main</mainClass>
+                            <mainClass>logReader.main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -54,6 +54,7 @@ public class LogFetcher {
             cLog.setRetval(rs.getString("RETVAL"));
             cLog.setIp(rs.getString("REQUEST_IP"));
             cLog.setMethod(rs.getString("METHOD"));
+            cLog.setThreadId(rs.getLong("THREAD_ID"));
             controllerLogs.add(cLog);
         }
         return controllerLogs;
