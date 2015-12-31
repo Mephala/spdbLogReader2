@@ -1,5 +1,7 @@
 package logReader.dao;
 
+import logReader.exception.LogReaderException;
+import logReader.manager.LogManager;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
 import logReader.model.TraceLog;
@@ -17,7 +19,7 @@ import java.util.List;
  */
 public class LogFetcher {
 
-    private static final int DEFAULT_CONTROLLER_LIMIT = 1000;
+    private static final int DEFAULT_CONTROLLER_LIMIT = LogManager.DEFAULT_CONTROLLER_LOG_LIMIT;
     private DBConnector dbConnector;
 
     public LogFetcher(DBConnector dbConnector) {
@@ -28,17 +30,22 @@ public class LogFetcher {
      * If not given, returns latest 500 logs from db.
      *
      * @return
+     * @param logQuery
+     * @param incrementCount
      */
-    public List<ControllerLog> fetchControllerLogs() throws SQLException {
-        return fetchControllerLogsByLimit(DEFAULT_CONTROLLER_LIMIT);
+    public List<ControllerLog> fetchControllerLogs(LogQuery logQuery, int incrementCount) throws SQLException, LogReaderException, ClassNotFoundException {
+        return fetchControllerLogsByLimit(DEFAULT_CONTROLLER_LIMIT, incrementCount);
     }
 
-    private List<ControllerLog> fetchControllerLogsByLimit(int defaultControllerLimit) throws SQLException {
+    private List<ControllerLog> fetchControllerLogsByLimit(int limit, int incrementCount) throws SQLException, LogReaderException, ClassNotFoundException {
         Connection connection = dbConnector.getConnection();
-        String sql = "Select * from SPG_CONTROLLER_LOG order by LOG_TIME desc limit " + defaultControllerLimit;
+        String sql = "Select * from SPG_CONTROLLER_LOG order by PRECISE_TIME desc limit " + (incrementCount * DEFAULT_CONTROLLER_LIMIT) + "," + limit;
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(sql);
         List<ControllerLog> controllerLogs = buildControllerLogList(rs);
+        connection.commit();
+        rs.close();
+        st.close();
         return controllerLogs;
     }
 
@@ -62,7 +69,7 @@ public class LogFetcher {
         return controllerLogs;
     }
 
-    public List<ControllerLog> fetchControllerLogs(LogQuery logQuery) throws SQLException {
+    public List<ControllerLog> fetchControllerLogs(LogQuery logQuery) throws SQLException, LogReaderException, ClassNotFoundException {
         Connection connection = dbConnector.getConnection();
         Integer limit = logQuery.getLimit();
         if (limit == null)
@@ -71,14 +78,14 @@ public class LogFetcher {
         if (LogReaderUtils.isNotEmpty(logQuery.getMethod()))
             whereClauseBuilder.append("where METHOD = '" + logQuery.getMethod() + "'");
         String whereClause = whereClauseBuilder.toString();
-        String sql = "Select * from SPG_CONTROLLER_LOG " + whereClause + " order by LOG_TIME desc limit " + limit.toString();
+        String sql = "Select * from SPG_CONTROLLER_LOG " + whereClause + " order by PRECISE_TIME desc limit " + limit.toString();
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(sql);
         List<ControllerLog> controllerLogs = buildControllerLogList(rs);
         return controllerLogs;
     }
 
-    public List<TraceLog> fetchTraceLogs(Long threadId) throws SQLException {
+    public List<TraceLog> fetchTraceLogs(Long threadId) throws SQLException, LogReaderException, ClassNotFoundException {
         List<TraceLog> traceLogs = new ArrayList<>();
         Connection connection = dbConnector.getConnection();
         String managerSelectSql = "select * from SPG_MANAGER_LOG where THREAD_ID = " + threadId.toString();
@@ -118,5 +125,9 @@ public class LogFetcher {
         rs.close();
         st.close();
         return traceLogs;
+    }
+
+    public List<ControllerLog> fetchControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
+        return fetchControllerLogsByLimit(DEFAULT_CONTROLLER_LIMIT, 0);
     }
 }

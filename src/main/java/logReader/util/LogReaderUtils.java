@@ -59,4 +59,7 @@ public class LogReaderUtils {
         });
     }
 
+    public static void promptErrorMsg(String message) {
+        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
 }

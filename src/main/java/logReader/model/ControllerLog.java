@@ -1,6 +1,7 @@
 package logReader.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by GokhanOzgozen on 12/24/2015.
@@ -18,9 +19,26 @@ public class ControllerLog {
     private String ip;
     private Long threadId;
     private Long preciseTime;
+    private String id;
 
     public ControllerLog() {
+        this.id = UUID.randomUUID().toString();
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ControllerLog that = (ControllerLog) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     public Long getPreciseTime() {

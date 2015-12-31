@@ -3,6 +3,7 @@ package logReader.main;
 import logReader.exception.LogReaderException;
 import logReader.manager.LogManager;
 import logReader.session.ApplicationSession;
+import logReader.util.LogReaderUtils;
 import logReader.view.LogView;
 import logReader.view.LoginView;
 
@@ -21,11 +22,11 @@ public class Main {
     public static void main(String[] args){
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            test();
-//            loginView = new LoginView();
-//            LogReaderUtils.centralizeJFrame(loginView);
-//            loginView.pack();
-//            loginView.setVisible(true);
+//            test();
+            loginView = new LoginView();
+            LogReaderUtils.centralizeJFrame(loginView);
+            loginView.pack();
+            loginView.setVisible(true);
         } catch (Throwable t) {
             t.printStackTrace();
             JOptionPane.showMessageDialog(null, "Fatal error on main process :" + t.getMessage(), "Fatal error", JOptionPane.ERROR_MESSAGE);

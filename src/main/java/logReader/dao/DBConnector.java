@@ -19,15 +19,26 @@ public class DBConnector {
 
 
     public DBConnector(String ip, String username, String password, String port) throws ClassNotFoundException, SQLException, LogReaderException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://"+ip+":"+port+"/serviceprovider?user="+username+"&password="+password);
-        if(connection == null)
-            throw new LogReaderException("Failed to obtain connection");
+        this.ip = ip;
+        this.username = username;
+        this.pw = password;
+        this.port = port;
+        Connection connection = generateNewConnection();
         this.connection =connection;
     }
 
-    public Connection getConnection() throws SQLException {
+    private Connection generateNewConnection() throws ClassNotFoundException, SQLException, LogReaderException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://" + this.ip + ":" + this.port + "/serviceprovider?user=" + this.username + "&password=" + this.pw);
+        if (connection == null)
+            throw new LogReaderException("Failed to obtain connection");
         connection.setAutoCommit(false);
+        return connection;
+    }
+
+    public Connection getConnection() throws SQLException, LogReaderException, ClassNotFoundException {
+        if (connection == null)
+            connection = generateNewConnection();
         return connection;
     }
 }

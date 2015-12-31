@@ -83,6 +83,27 @@ public class TestLogFetching {
         assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
     }
 
+    /**
+     * There must be at least DEFAULT_CONTROLLER_LOG_SIZE + 1 for this test to pass.
+     *
+     * @throws SQLException
+     * @throws LogReaderException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void testReloadingControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs();
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
+        LogReaderUtils.sortControllerLogs(controllerLogs);
+        ControllerLog firstLogOfFirstList = controllerLogs.get(0);
+        List<ControllerLog> secondList = logManager.fetchLatestControllerLogs();
+        assertTrue(LogReaderUtils.isNotEmpty(secondList));
+        LogReaderUtils.sortControllerLogs(secondList);
+        ControllerLog firstLogOfSecondList = secondList.get(0);
+        assertTrue(!firstLogOfFirstList.equals(firstLogOfSecondList));
+    }
+
     @Test
     public void testFetchingMethodExistsInControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
         LogManager logManager = new LogManager();

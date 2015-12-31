@@ -19,12 +19,13 @@ import java.util.List;
  */
 public class LogManager {
 
-    private static final Integer DEFAULT_CONTROLLER_LOG_LIMIT = 1000;
+    public static final Integer DEFAULT_CONTROLLER_LOG_LIMIT = 1000;
     private static final String DEFAULT_IP = "localhost";
     private static final String DEFAULT_USERNAME = "root";
     private static final String DEFAULT_PASSWORD = "bbbbbbbbb";
     private static final String DEFAULT_PORT = "3306";
     private LogFetcher logFetcher;
+    private int incrementCount = 0;
 
 
     public LogManager() throws SQLException, LogReaderException, ClassNotFoundException {
@@ -43,19 +44,25 @@ public class LogManager {
         this.logFetcher = logFetcher;
     }
 
-    public List<ControllerLog> fetchLatestControllerLogs() throws SQLException {
+    public List<ControllerLog> fetchLatestControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
         return fetchLatestControllerLogs(DEFAULT_CONTROLLER_LOG_LIMIT);
     }
 
 
-    public List<ControllerLog> fetchLatestControllerLogs(int latestLogLimit) throws SQLException {
+    public List<ControllerLog> fetchLatestControllerLogs(int latestLogLimit) throws SQLException, LogReaderException, ClassNotFoundException {
         LogQuery logQuery = new LogQuery();
         logQuery.setLimit(latestLogLimit);
-        return logFetcher.fetchControllerLogs(logQuery);
+        List<ControllerLog> controllerLogs = logFetcher.fetchControllerLogs(logQuery, incrementCount);
+        incrementCount++;
+        return controllerLogs;
     }
 
-    public DefaultTableModel createDefaultTableModel() throws SQLException {
+    public DefaultTableModel createDefaultTableModel() throws SQLException, LogReaderException, ClassNotFoundException {
         List<ControllerLog> controllerLogs = fetchLatestControllerLogs();
+        return createTableModelFromList(controllerLogs);
+    }
+
+    public DefaultTableModel createTableModelFromList(List<ControllerLog> controllerLogs) {
         LogReaderUtils.sortControllerLogs(controllerLogs);
         DefaultTableModel defaultTableModel = new DefaultTableModel() {
             @Override
@@ -75,22 +82,26 @@ public class LogManager {
         defaultTableModel.addColumn("LOG TIME");
         defaultTableModel.addColumn("PRECISE_TIME");
         defaultTableModel.addColumn("THREAD_ID");
+        addLogsToTable(controllerLogs, defaultTableModel);
+        return defaultTableModel;
+    }
+
+    public void addLogsToTable(List<ControllerLog> controllerLogs, DefaultTableModel defaultTableModel) {
         for (ControllerLog controllerLog : controllerLogs) {
             defaultTableModel.addRow(new Object[]{controllerLog.getMethod(), controllerLog.getExecutiontime(),
                     controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString(), controllerLog.getPreciseTime(), controllerLog.getThreadId()});
         }
-        return defaultTableModel;
     }
 
-    public List<TraceLog> getLogTrace(ControllerLog controllerLog) throws SQLException {
+    public List<TraceLog> getLogTrace(ControllerLog controllerLog) throws SQLException, LogReaderException, ClassNotFoundException {
         return logFetcher.fetchTraceLogs(controllerLog.getThreadId());
     }
 
-    public List<TraceLog> getLogTrace(Long threadId) throws SQLException {
+    public List<TraceLog> getLogTrace(Long threadId) throws SQLException, LogReaderException, ClassNotFoundException {
         return logFetcher.fetchTraceLogs(threadId);
     }
 
-    public DefaultTableModel createLogTraceTable(Long threadId, Long executionTime, Long preciseTime) throws SQLException {
+    public DefaultTableModel createLogTraceTable(Long threadId, Long executionTime, Long preciseTime) throws SQLException, LogReaderException, ClassNotFoundException {
         DefaultTableModel defaultTableModel = new DefaultTableModel() {
             @Override
             public Class getColumnClass(int c) {
@@ -127,5 +138,10 @@ public class LogManager {
         }
 
         return defaultTableModel;
+    }
+
+    public List<ControllerLog> refreshControllerLogs() throws SQLException, LogReaderException, ClassNotFoundException {
+        incrementCount = 0;
+        return fetchLatestControllerLogs();
     }
 }
