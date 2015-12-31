@@ -15,9 +15,17 @@ public class TraceLog {
     private String parameter;
     private Date logTime;
     private Long preciseTime;
-
+    private String exception;
 
     public TraceLog() {
+    }
+
+    public String getException() {
+        return exception;
+    }
+
+    public void setException(String exception) {
+        this.exception = exception;
     }
 
     @Override

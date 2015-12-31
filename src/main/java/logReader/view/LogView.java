@@ -1,5 +1,8 @@
 package logReader.view;
 
+import logReader.manager.LogManager;
+import logReader.session.ApplicationSession;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
@@ -12,17 +15,34 @@ public class LogView extends JFrame {
     private JTable table;
     private JPanel panel;
 
-    public LogView(DefaultTableModel defaultTableModel) {
+    public LogView(final DefaultTableModel defaultTableModel) {
         super("Logs");
         setContentPane(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         table.setModel(defaultTableModel);
         table.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(final MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON2) {
-                    LogTraceView logTraceView = new LogTraceView();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                int rowNum = table.getSelectedRow();
+                                int modelRow = table.convertRowIndexToModel(rowNum);
+                                Object value = defaultTableModel.getValueAt(modelRow, 7);
+                                Long threadId = (Long) value;
+                                LogManager logManager = ApplicationSession.logManager;
+                                DefaultTableModel traceTable = logManager.createLogTraceTable(threadId);
+                                new LogTraceView(traceTable);
+                            } catch (Throwable t) {
+                                t.printStackTrace();
+                                JOptionPane.showMessageDialog(null, t.getMessage(), "Failed to fetch traceLogs.", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }).start();
+
                 }
             }
         });

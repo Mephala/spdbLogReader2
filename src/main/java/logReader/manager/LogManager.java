@@ -71,14 +71,47 @@ public class LogManager {
         defaultTableModel.addColumn("CUSTOM LOG");
         defaultTableModel.addColumn("LOG TIME");
         defaultTableModel.addColumn("PRECISE_TIME");
+        defaultTableModel.addColumn("THREAD_ID");
         for (ControllerLog controllerLog : controllerLogs) {
             defaultTableModel.addRow(new Object[]{controllerLog.getMethod(), controllerLog.getExecutiontime(),
-                    controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString(), controllerLog.getPreciseTime()});
+                    controllerLog.getException(), controllerLog.getIp(), controllerLog.getCustomLog(), new Timestamp(controllerLog.getLogDate().getTime()).toString(), controllerLog.getPreciseTime(), controllerLog.getThreadId()});
         }
         return defaultTableModel;
     }
 
     public List<TraceLog> getLogTrace(ControllerLog controllerLog) throws SQLException {
         return logFetcher.fetchTraceLogs(controllerLog.getThreadId());
+    }
+
+    public List<TraceLog> getLogTrace(Long threadId) throws SQLException {
+        return logFetcher.fetchTraceLogs(threadId);
+    }
+
+    public DefaultTableModel createLogTraceTable(Long threadId) throws SQLException {
+        DefaultTableModel defaultTableModel = new DefaultTableModel() {
+            @Override
+            public Class getColumnClass(int c) {
+                Object obj = getValueAt(0, c);
+                if (obj == null)
+                    return Object.class;
+                else
+                    return getValueAt(0, c).getClass();
+            }
+        };
+        defaultTableModel.addColumn("CLASS");
+        defaultTableModel.addColumn("METHOD");
+        defaultTableModel.addColumn("EXECUTION TIME");
+        defaultTableModel.addColumn("EXCEPTION");
+        defaultTableModel.addColumn("PARAMETER");
+        defaultTableModel.addColumn("RETVAL");
+        defaultTableModel.addColumn("LOG TIME");
+        defaultTableModel.addColumn("PRECISE_TIME");
+        defaultTableModel.addColumn("THREAD_ID");
+        List<TraceLog> traceLogs = logFetcher.fetchTraceLogs(threadId);
+        for (TraceLog traceLog : traceLogs) {
+            defaultTableModel.addRow(new Object[]{traceLog.getClassName(), traceLog.getMethod(), traceLog.getExecutionTime(), traceLog.getException(), traceLog.getParameter(), traceLog.getRetval()
+                    , traceLog.getLogTime(), traceLog.getPreciseTime(), threadId});
+        }
+        return defaultTableModel;
     }
 }

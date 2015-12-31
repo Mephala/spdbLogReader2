@@ -34,7 +34,8 @@ public class Main {
 
     private static void test() throws SQLException, LogReaderException, ClassNotFoundException {
 
-        DefaultTableModel defaultTableModel = new LogManager().createDefaultTableModel();
+        LogManager logManager = ApplicationSession.logManager = new LogManager();
+        DefaultTableModel defaultTableModel = logManager.createDefaultTableModel();
         LogView logView = new LogView(defaultTableModel);
         logView.pack();
         logView.setVisible(true);

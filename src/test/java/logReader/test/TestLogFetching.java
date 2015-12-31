@@ -57,7 +57,7 @@ public class TestLogFetching {
     @Test
     public void testFetchingLogsByQuery() throws SQLException, LogReaderException, ClassNotFoundException {
         LogQuery logQuery = new LogQuery();
-        logQuery.setMethod("handShake");
+        logQuery.setMethod("getNearestPosts");
         String dbIp = "localhost";
         String username = "root";
         String pw = "bbbbbbbbb";
@@ -113,6 +113,22 @@ public class TestLogFetching {
         int logSampleIndex = r.nextInt(latestLogLimit);
         ControllerLog randomLog = controllerLogs.get(logSampleIndex);
         List<TraceLog> traceLogs = logManager.getLogTrace(randomLog);
+        assertTrue(LogReaderUtils.isNotEmpty(traceLogs));
+    }
+
+    @Test
+    public void testTracingALogFromThradId() throws SQLException, LogReaderException, ClassNotFoundException {
+        LogManager logManager = new LogManager();
+        final int latestLogLimit = 100;
+        List<ControllerLog> controllerLogs = logManager.fetchLatestControllerLogs(latestLogLimit);
+        assertTrue(LogReaderUtils.isNotEmpty(controllerLogs));
+        for (ControllerLog controllerLog : controllerLogs) {
+            assertTrue(LogReaderUtils.isNotEmpty(controllerLog.getMethod()));
+        }
+        Random r = new Random();
+        int logSampleIndex = r.nextInt(latestLogLimit);
+        ControllerLog randomLog = controllerLogs.get(logSampleIndex);
+        List<TraceLog> traceLogs = logManager.getLogTrace(randomLog.getThreadId());
         assertTrue(LogReaderUtils.isNotEmpty(traceLogs));
     }
 

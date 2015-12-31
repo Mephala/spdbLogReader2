@@ -1,17 +1,19 @@
 package logReader.view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Created by GokhanOzgozen on 12/29/2015.
  */
 public class LogTraceView extends JFrame {
-    private JTable table1;
-    private JPanel panel1;
+    private JTable table;
+    private JPanel panel;
 
-    public LogTraceView() {
+    public LogTraceView(DefaultTableModel defaultTableModel) {
         super("Log Trace");
-        setContentPane(panel1);
+        setContentPane(panel);
+        table.setModel(defaultTableModel);
         pack();
         setVisible(true);
     }

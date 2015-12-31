@@ -10,7 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -86,16 +87,44 @@ public class LogFetcher {
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(managerSelectSql);
         while (rs.next()) {
-
+            TraceLog traceLog = new TraceLog();
+            traceLog.setMethod(rs.getString("METHOD"));
+            traceLog.setPreciseTime(rs.getLong("PRECISE_TIME"));
+            traceLog.setClassName(rs.getString("MANAGER"));
+            traceLog.setExecutionTime(rs.getLong("EXECUTION_TIME"));
+            traceLog.setLogTime(rs.getTimestamp("LOG_TIME"));
+            traceLog.setThreadId(threadId);
+            traceLog.setParameter(rs.getString("PARAMETER"));
+            traceLog.setRetval(rs.getString("RETVAL"));
+            traceLog.setException(rs.getString("EXCEPTION"));
+            traceLogs.add(traceLog);
         }
-        TraceLog traceLog = new TraceLog();
-        traceLog.setMethod("test");
-        traceLog.setPreciseTime(System.currentTimeMillis());
-        traceLog.setClassName("myClass");
-        traceLog.setExecutionTime(33L);
-        traceLog.setLogTime(new Date());
-        traceLog.setThreadId(19L);
-        traceLogs.add(traceLog);
+        String daoSelectSql = "select * from SPG_DAO_LOG where THREAD_ID = " + threadId.toString();
+        rs.close();
+        st.close();
+        st = connection.createStatement();
+        rs = st.executeQuery(daoSelectSql);
+        while (rs.next()) {
+            TraceLog traceLog = new TraceLog();
+            traceLog.setMethod(rs.getString("METHOD"));
+            traceLog.setPreciseTime(rs.getLong("PRECISE_TIME"));
+            traceLog.setClassName(rs.getString("DAO"));
+            traceLog.setExecutionTime(rs.getLong("EXECUTION_TIME"));
+            traceLog.setLogTime(rs.getTimestamp("LOG_TIME"));
+            traceLog.setThreadId(threadId);
+            traceLog.setParameter(rs.getString("PARAMETER"));
+            traceLog.setRetval(rs.getString("RETVAL"));
+            traceLog.setException(rs.getString("EXCEPTION"));
+            traceLogs.add(traceLog);
+        }
+        rs.close();
+        st.close();
+        Collections.sort(traceLogs, new Comparator<TraceLog>() {
+            @Override
+            public int compare(TraceLog o1, TraceLog o2) {
+                return o1.getPreciseTime().compareTo(o2.getPreciseTime());
+            }
+        });
         return traceLogs;
     }
 }
