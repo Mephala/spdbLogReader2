@@ -6,6 +6,7 @@ import logReader.exception.LogReaderException;
 import logReader.model.ControllerLog;
 import logReader.model.LogQuery;
 import logReader.model.TraceLog;
+import logReader.util.LogReaderUtils;
 
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
@@ -54,6 +55,7 @@ public class LogManager {
 
     public DefaultTableModel createDefaultTableModel() throws SQLException {
         List<ControllerLog> controllerLogs = fetchLatestControllerLogs();
+        LogReaderUtils.sortControllerLogs(controllerLogs);
         DefaultTableModel defaultTableModel = new DefaultTableModel() {
             @Override
             public Class getColumnClass(int c) {
@@ -108,10 +110,12 @@ public class LogManager {
         defaultTableModel.addColumn("PRECISE_TIME");
         defaultTableModel.addColumn("THREAD_ID");
         List<TraceLog> traceLogs = logFetcher.fetchTraceLogs(threadId);
+        LogReaderUtils.sortTraceLogs(traceLogs);
         for (TraceLog traceLog : traceLogs) {
             defaultTableModel.addRow(new Object[]{traceLog.getClassName(), traceLog.getMethod(), traceLog.getExecutionTime(), traceLog.getException(), traceLog.getParameter(), traceLog.getRetval()
                     , traceLog.getLogTime(), traceLog.getPreciseTime(), threadId});
         }
+
         return defaultTableModel;
     }
 }

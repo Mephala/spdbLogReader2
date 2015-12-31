@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -119,12 +117,6 @@ public class LogFetcher {
         }
         rs.close();
         st.close();
-        Collections.sort(traceLogs, new Comparator<TraceLog>() {
-            @Override
-            public int compare(TraceLog o1, TraceLog o2) {
-                return o1.getPreciseTime().compareTo(o2.getPreciseTime());
-            }
-        });
         return traceLogs;
     }
 }
