@@ -116,7 +116,7 @@ public class LogManager {
         while (traceLogIterator.hasNext()) {
             TraceLog next = traceLogIterator.next();
             Long finishPreciseTime = next.getPreciseTime();
-            boolean notInTraceInterval = !(finishPreciseTime < preciseTime && finishPreciseTime > start);
+            boolean notInTraceInterval = !(finishPreciseTime <= preciseTime && finishPreciseTime >= start);
             if (notInTraceInterval)
                 traceLogIterator.remove();
         }
