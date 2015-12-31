@@ -11,6 +11,7 @@ import logReader.util.LogReaderUtils;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -89,7 +90,7 @@ public class LogManager {
         return logFetcher.fetchTraceLogs(threadId);
     }
 
-    public DefaultTableModel createLogTraceTable(Long threadId) throws SQLException {
+    public DefaultTableModel createLogTraceTable(Long threadId, Long executionTime, Long preciseTime) throws SQLException {
         DefaultTableModel defaultTableModel = new DefaultTableModel() {
             @Override
             public Class getColumnClass(int c) {
@@ -110,6 +111,15 @@ public class LogManager {
         defaultTableModel.addColumn("PRECISE_TIME");
         defaultTableModel.addColumn("THREAD_ID");
         List<TraceLog> traceLogs = logFetcher.fetchTraceLogs(threadId);
+        Iterator<TraceLog> traceLogIterator = traceLogs.iterator();
+        final long start = preciseTime - executionTime;
+        while (traceLogIterator.hasNext()) {
+            TraceLog next = traceLogIterator.next();
+            Long finishPreciseTime = next.getPreciseTime();
+            boolean notInTraceInterval = !(finishPreciseTime < preciseTime && finishPreciseTime > start);
+            if (notInTraceInterval)
+                traceLogIterator.remove();
+        }
         LogReaderUtils.sortTraceLogs(traceLogs);
         for (TraceLog traceLog : traceLogs) {
             defaultTableModel.addRow(new Object[]{traceLog.getClassName(), traceLog.getMethod(), traceLog.getExecutionTime(), traceLog.getException(), traceLog.getParameter(), traceLog.getRetval()

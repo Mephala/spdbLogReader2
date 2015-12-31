@@ -34,7 +34,9 @@ public class LogView extends JFrame {
                                 Object value = defaultTableModel.getValueAt(modelRow, 7);
                                 Long threadId = (Long) value;
                                 LogManager logManager = ApplicationSession.logManager;
-                                DefaultTableModel traceTable = logManager.createLogTraceTable(threadId);
+                                Long executionTime = (Long) defaultTableModel.getValueAt(modelRow, 1);
+                                Long preciseTime = (Long) defaultTableModel.getValueAt(modelRow, 6);
+                                DefaultTableModel traceTable = logManager.createLogTraceTable(threadId, executionTime, preciseTime);
                                 new LogTraceView(traceTable);
                             } catch (Throwable t) {
                                 t.printStackTrace();
